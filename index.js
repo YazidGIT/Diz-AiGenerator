@@ -1,3 +1,5 @@
+npm install @huggingface/inference;
+
 const express = require('express');
 const { HfInference } = require('@huggingface/inference');
 
