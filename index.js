@@ -4,7 +4,7 @@ const { HfInference } = require('@huggingface/inference');
 const app = express();
 const port = process.env.PORT || 3000;
 
-const HF_TOKEN = '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'; // Remplacez par votre token Hugging Face
+const HF_TOKEN = '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'; // Remplacez par votre token Hugging Face
 const hf = new HfInference(HF_TOKEN);
 
 app.get('/generate', async (req, res) => {
@@ -24,7 +24,7 @@ app.get('/generate', async (req, res) => {
     try {
         const response = await hf.textToImage({
             inputs: prompt,
-            model: 'cagliostrolab/animagine-xl-3.1',
+            model: 'stabilityai/stable-diffusion-2',
             parameters: {
                 negative_prompt: negativePrompt,
                 width: width,
@@ -38,7 +38,7 @@ app.get('/generate', async (req, res) => {
 
         if (response && response.generated_images) {
             // Encode the generated image as base64
-            const base64Image = response.generated_images[0].data.toString('base64');
+            const base64Image = response.generated_images[0].toString('base64');
             const imageData = `data:image/jpeg;base64,${base64Image}`;
             res.send(imageData);
         } else {
