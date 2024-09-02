@@ -210,9 +210,9 @@
             const prompt = document.getElementById('prompt').value;
             const model = document.getElementById('model').value;
               let ratio = '1:1';
-       const steps;
-       const cfg_scale;
-       const loraWeights = {};
+       let steps;
+       let cfg_scale;
+       let loraWeights = {};
             const resultDiv = document.getElementById('result');
             const loadingBar = document.querySelector('.loading-bar');
             const button = document.querySelector('button');
