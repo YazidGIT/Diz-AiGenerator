@@ -220,7 +220,7 @@ const models = {
 },
 
 };
-
+app.use(express.static(path.join(__dirname, 'public')));
 app.get('/generate-image', async (req, res) => {
   const { prompt, modelIndex = 1, sampler = 'Euler a', ratio = '1:1', steps, cfg_scale, loras: lorasQuery } = req.query;
 
