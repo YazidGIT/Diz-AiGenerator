@@ -7,43 +7,39 @@
   <style>
     body {
       font-family: 'Roboto', sans-serif;
-      background-color: #0e0e0e;
-      color: #ffffff;
+      background-color: #0d0d0d;
+      color: #f0f0f0;
       margin: 0;
       padding: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      background-image: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);
+      flex-direction: column;
+      min-height: 100vh;
     }
 
     h1 {
       text-align: center;
-      color: #ffffff;
+      color: #f39c12;
+      font-size: 2.5rem;
       margin-bottom: 20px;
-      font-size: 1.8rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
     }
 
     form {
-      background-color: rgba(255, 255, 255, 0.1);
-      padding: 30px;
+      background-color: #1a1a1a;
+      padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      backdrop-filter: blur(10px);
-      max-width: 400px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
       width: 100%;
+      max-width: 500px;
+      margin-bottom: 30px;
     }
 
     label {
       font-weight: bold;
+      margin-top: 10px;
       display: block;
-      margin-top: 20px;
-      color: #ffffff;
-      text-transform: uppercase;
-      font-size: 0.85rem;
+      color: #f39c12;
     }
 
     input[type="text"],
@@ -51,62 +47,47 @@
     select {
       width: 100%;
       padding: 10px;
-      margin-top: 5px;
-      border: none;
+      margin: 5px 0 10px 0;
+      border: 1px solid #333;
       border-radius: 5px;
       box-sizing: border-box;
-      background-color: rgba(255, 255, 255, 0.15);
-      color: #ffffff;
+      background-color: #333;
+      color: #f0f0f0;
       font-size: 1rem;
-      transition: all 0.3s ease;
-    }
-
-    input[type="text"]:focus,
-    input[type="number"]:focus,
-    select:focus {
-      background-color: rgba(255, 255, 255, 0.25);
-      outline: none;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
     }
 
     input[type="submit"] {
-      background-color: #6a11cb;
-      background-image: linear-gradient(315deg, #6a11cb 0%, #2575fc 74%);
+      background-color: #f39c12;
       color: white;
-      padding: 15px;
+      padding: 12px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
       width: 100%;
-      font-size: 1.2rem;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: all 0.3s ease;
-      margin-top: 20px;
+      font-size: 1.1rem;
+      transition: background-color 0.3s;
     }
 
     input[type="submit"]:hover {
-      background-image: linear-gradient(315deg, #2575fc 0%, #6a11cb 74%);
-      transform: scale(1.05);
+      background-color: #e67e22;
     }
 
     .toggle-button {
-      background-color: rgba(255, 255, 255, 0.2);
+      background-color: #f39c12;
       color: white;
-      padding: 10px;
+      padding: 10px 15px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
       width: 100%;
-      font-size: 1rem;
       text-align: left;
-      margin-top: 20px;
-      transition: background-color 0.3s ease;
+      margin-top: 10px;
+      font-size: 1rem;
+      transition: background-color 0.3s;
     }
 
     .toggle-button:hover {
-      background-color: rgba(255, 255, 255, 0.3);
+      background-color: #e67e22;
     }
 
     .optional-parameters {
@@ -114,25 +95,44 @@
       margin-top: 10px;
     }
 
-    .optional-parameters label {
-      margin-top: 10px;
+    .image-container {
+      background-color: #1a1a1a;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
     }
 
-    .optional-parameters input[type="number"] {
-      margin-top: 5px;
+    .image-container img {
+      width: 100%;
+      height: auto;
+      border-radius: 5px;
     }
 
-    @media (max-width: 480px) {
+    .image-container h2 {
+      color: #f39c12;
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+    }
+
+    @media (max-width: 600px) {
       h1 {
-        font-size: 1.4rem;
+        font-size: 2rem;
+      }
+
+      .toggle-button,
+      input[type="submit"] {
+        font-size: 1rem;
       }
     }
   </style>
 </head>
 <body>
-  <form action="/generate-image" method="get">
-    <h1>Image Generator</h1>
-    
+  <h1>Image Generator</h1>
+  
+  <form action="/generate-image" method="get" onsubmit="return generateImage(event)">
     <label for="prompt">Prompt:</label>
     <input type="text" id="prompt" name="prompt" required>
     
@@ -154,30 +154,46 @@
     <button type="button" class="toggle-button" onclick="toggleOptionalParams()">Optional Parameters &#9660;</button>
     
     <div class="optional-parameters" id="optional-parameters">
-      <label for="steps">Steps:</label>
+      <label for="steps">Steps (1-35)</label>
       <input type="number" id="steps" name="steps">
       
-      <label for="cfg_scale">CFG Scale:</label>
+      <label for="cfg_scale">CFG Scale (1-20) </label>
       <input type="number" id="cfg_scale" name="cfg_scale">
       
-      <label for="loras">Loras:</label>
+      <label for="loras">Loras (1-58) </label>
       <input type="text" id="loras" name="loras" placeholder="1:0.5,2:1">
     </div>
     
     <input type="submit" value="Generate Image">
   </form>
 
+  <div class="image-container" id="image-container">
+    <h2>Generated Image</h2>
+    <img id="generated-image" src="" alt="Generated Image" style="display: none;">
+  </div>
+
   <script>
     function toggleOptionalParams() {
       const optionalParams = document.getElementById('optional-parameters');
-      const toggleButton = document.querySelector('.toggle-button');
-      if (optionalParams.style.display === 'none' || optionalParams.style.display === '') {
-        optionalParams.style.display = 'block';
-        toggleButton.innerHTML = 'Optional Parameters &#9650;';
-      } else {
-        optionalParams.style.display = 'none';
-        toggleButton.innerHTML = 'Optional Parameters &#9660;';
-      }
+      optionalParams.style.display = optionalParams.style.display === 'none' || optionalParams.style.display === '' ? 'block' : 'none';
+    }
+
+    function generateImage(event) {
+      event.preventDefault();
+      const form = event.target;
+      const url = new URL(form.action);
+      const params = new URLSearchParams(new FormData(form));
+      url.search = params.toString();
+      
+      fetch(url)
+        .then(response => response.blob())
+        .then(blob => {
+          const imageUrl = URL.createObjectURL(blob);
+          const imageElement = document.getElementById('generated-image');
+          imageElement.src = imageUrl;
+          imageElement.style.display = 'block';
+        })
+        .catch(error => console.error('Error generating image:', error));
     }
   </script>
 </body>
