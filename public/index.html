@@ -4,33 +4,145 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Image Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .form-group button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+    }
+    .form-group button:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
 <body>
-  <h1>Image Generator</h1>
-  <form action="/generate-image" method="get">
-    <label for="prompt">Prompt:</label>
-    <input type="text" id="prompt" name="prompt" required>
-    <br>
-    <label for="model">Model Index:</label>
-    <input type="number" id="model" name="modelIndex" min="1" value="1">
-    <br>
-    <label for="ratio">Ratio:</label>
-    <select id="ratio" name="ratio">
-      <option value="1:1">1:1</option>
-      <option value="9:7">9:7</option>
-      <!-- Ajoutez plus d'options si nécessaire -->
-    </select>
-    <br>
-    <label for="steps">Steps:</label>
-    <input type="number" id="steps" name="steps">
-    <br>
-    <label for="cfg_scale">CFG Scale:</label>
-    <input type="number" id="cfg_scale" name="cfg_scale">
-    <br>
-    <label for="loras">Loras:</label>
-    <input type="text" id="loras" name="loras" placeholder="1:0.5,2:1">
-    <br>
-    <input type="submit" value="Generate Image">
-  </form>
+  <div class="container">
+    <h1>Image Generator</h1>
+    <form id="imageForm">
+      <div class="form-group">
+        <label for="prompt">Prompt</label>
+        <input type="text" id="prompt" name="prompt" placeholder="Enter image prompt" required>
+      </div>
+      <div class="form-group">
+        <label for="model">Model</label>
+        <select id="model" name="model" required>
+          <!-- Options will be added dynamically with JavaScript -->
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="ratio">Ratio</label>
+        <select id="ratio" name="ratio" required>
+          <!-- Options will be added dynamically with JavaScript -->
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="steps">Steps</label>
+        <input type="number" id="steps" name="steps" placeholder="Number of steps (optional)">
+      </div>
+      <div class="form-group">
+        <label for="cfg_scale">CFG Scale</label>
+        <input type="number" id="cfg_scale" name="cfg_scale" placeholder="CFG Scale (optional)">
+      </div>
+      <div class="form-group">
+        <label for="loras">Loras (comma-separated)</label>
+        <input type="text" id="loras" name="loras" placeholder="Enter loras with weights (optional)">
+      </div>
+      <div class="form-group">
+        <button type="submit">Generate Image</button>
+      </div>
+    </form>
+    <div id="result" style="display: none;">
+      <h2>Generated Image</h2>
+      <img id="image" src="" alt="Generated Image" style="width: 100%; border-radius: 8px;">
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const models = [
+        { id: 1, name: 'AnimagineXL-3.1' },
+        { id: 2, name: 'OxalisAnimeHentaiModel-OAH-1' },
+        { id: 3, name: 'ChilloutMix-Ni' },
+        { id: 4, name: '3DCartoonVision-V1' },
+        // Add other models here
+      ];
+      const ratios = [
+        { value: '1:1', label: '1:1' },
+        { value: '9:7', label: '9:7' },
+        { value: '7:9', label: '7:9' },
+        { value: '19:13', label: '19:13' },
+        // Add other ratios here
+      ];
+
+      const modelSelect = document.getElementById('model');
+      models.forEach(model => {
+        const option = document.createElement('option');
+        option.value = model.id;
+        option.textContent = model.name;
+        modelSelect.appendChild(option);
+      });
+
+      const ratioSelect = document.getElementById('ratio');
+      ratios.forEach(ratio => {
+        const option = document.createElement('option');
+        option.value = ratio.value;
+        option.textContent = ratio.label;
+        ratioSelect.appendChild(option);
+      });
+
+      document.getElementById('imageForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const queryParams = new URLSearchParams(formData).toString();
+        const response = await fetch(`/generate-image?${queryParams}`);
+        if (response.ok) {
+          const imageUrl = await response.text();
+          document.getElementById('image').src = imageUrl;
+          document.getElementById('result').style.display = 'block';
+        } else {
+          alert('Error generating image.');
+        }
+      });
+    });
+  </script>
 </body>
 </html>
