@@ -72,6 +72,11 @@
       background-color: #e67e22;
     }
 
+    .optional-parameters {
+      display: none;
+      margin-top: 10px;
+    }
+
     .toggle-button {
       background-color: #f39c12;
       color: white;
@@ -90,25 +95,22 @@
       background-color: #e67e22;
     }
 
-    .optional-parameters {
-      display: none;
-      margin-top: 10px;
-    }
-
     .image-container {
       background-color: #1a1a1a;
       padding: 15px;
       border-radius: 10px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-      max-width: 500px;
+      max-width: 100%;
       width: 100%;
       text-align: center;
+      margin-top: 20px;
     }
 
     .image-container img {
-      width: 100%;
+      max-width: 100%;
       height: auto;
       border-radius: 5px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 
     .image-container h2 {
@@ -154,13 +156,13 @@
     <button type="button" class="toggle-button" onclick="toggleOptionalParams()">Optional Parameters &#9660;</button>
     
     <div class="optional-parameters" id="optional-parameters">
-      <label for="steps">Steps (1-35)</label>
+      <label for="steps">Steps:</label>
       <input type="number" id="steps" name="steps">
       
-      <label for="cfg_scale">CFG Scale (1-20) </label>
+      <label for="cfg_scale">CFG Scale:</label>
       <input type="number" id="cfg_scale" name="cfg_scale">
       
-      <label for="loras">Loras (1-58) </label>
+      <label for="loras">Loras:</label>
       <input type="text" id="loras" name="loras" placeholder="1:0.5,2:1">
     </div>
     
