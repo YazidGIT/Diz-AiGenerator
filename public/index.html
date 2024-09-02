@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: 'Roboto', sans-serif;
-      background-color: #0d0d0d;
+      background: linear-gradient(135deg, #2a2a72, #009ffd);
       color: #f0f0f0;
       margin: 0;
       padding: 20px;
@@ -26,9 +26,9 @@
     }
 
     form {
-      background-color: #1a1a1a;
+      background: linear-gradient(135deg, #3b3b98, #1e3799);
       padding: 20px;
-      border-radius: 10px;
+      border-radius: 20px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
       width: 100%;
       max-width: 500px;
@@ -49,9 +49,9 @@
       padding: 10px;
       margin: 5px 0 10px 0;
       border: 1px solid #333;
-      border-radius: 5px;
+      border-radius: 10px;
       box-sizing: border-box;
-      background-color: #333;
+      background-color: #2f2f2f;
       color: #f0f0f0;
       font-size: 1rem;
     }
@@ -61,7 +61,7 @@
       color: white;
       padding: 12px;
       border: none;
-      border-radius: 5px;
+      border-radius: 10px;
       cursor: pointer;
       width: 100%;
       font-size: 1.1rem;
@@ -78,11 +78,11 @@
     }
 
     .toggle-button {
-      background-color: #f39c12;
-      color: white;
+      background-color: transparent;
+      color: #f39c12;
       padding: 10px 15px;
       border: none;
-      border-radius: 5px;
+      border-radius: 10px;
       cursor: pointer;
       width: 100%;
       text-align: left;
@@ -92,13 +92,13 @@
     }
 
     .toggle-button:hover {
-      background-color: #e67e22;
+      color: #e67e22;
     }
 
     .image-container {
       background-color: #1a1a1a;
       padding: 15px;
-      border-radius: 10px;
+      border-radius: 20px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
       max-width: 100%;
       width: 100%;
@@ -109,7 +109,7 @@
     .image-container img {
       max-width: 100%;
       height: auto;
-      border-radius: 5px;
+      border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 
@@ -117,6 +117,29 @@
       color: #f39c12;
       font-size: 1.5rem;
       margin-bottom: 15px;
+    }
+
+    .loading-message {
+      font-size: 1.2rem;
+      color: #f39c12;
+      display: none;
+      margin-top: 15px;
+    }
+
+    .loading-animation {
+      display: none;
+      border: 5px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 5px solid #f39c12;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-top: 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
     @media (max-width: 600px) {
@@ -143,14 +166,12 @@
       <option value="1">Model 1</option>
       <option value="2">Model 2</option>
       <option value="3">Model 3</option>
-      <!-- Ajoutez plus d'options de modèle si nécessaire -->
     </select>
     
     <label for="ratio">Ratio:</label>
     <select id="ratio" name="ratio">
       <option value="1:1">1:1</option>
       <option value="9:7">9:7</option>
-      <!-- Ajoutez plus d'options de ratio si nécessaire -->
     </select>
     
     <button type="button" class="toggle-button" onclick="toggleOptionalParams()">Optional Parameters &#9660;</button>
@@ -169,6 +190,9 @@
     <input type="submit" value="Generate Image">
   </form>
 
+  <div class="loading-message" id="loading-message">Please wait, generating image...</div>
+  <div class="loading-animation" id="loading-animation"></div>
+
   <div class="image-container" id="image-container">
     <h2>Generated Image</h2>
     <img id="generated-image" src="" alt="Generated Image" style="display: none;">
@@ -186,7 +210,11 @@
       const url = new URL(form.action);
       const params = new URLSearchParams(new FormData(form));
       url.search = params.toString();
-      
+
+      document.getElementById('loading-message').style.display = 'block';
+      document.getElementById('loading-animation').style.display = 'block';
+      document.getElementById('generated-image').style.display = 'none';
+
       fetch(url)
         .then(response => response.blob())
         .then(blob => {
@@ -194,8 +222,14 @@
           const imageElement = document.getElementById('generated-image');
           imageElement.src = imageUrl;
           imageElement.style.display = 'block';
+          document.getElementById('loading-message').style.display = 'none';
+          document.getElementById('loading-animation').style.display = 'none';
         })
-        .catch(error => console.error('Error generating image:', error));
+        .catch(error => {
+          console.error('Error generating image:', error);
+          document.getElementById('loading-message').style.display = 'none';
+          document.getElementById('loading-animation').style.display = 'none';
+        });
     }
   </script>
 </body>
