@@ -7,34 +7,40 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Générateur d'Images</h1>
-        
-        <form id="generate-form">
-            <label for="prompt">Prompt :</label>
-            <input type="text" id="prompt" name="prompt" required>
+    <h1>Générateur d'Images</h1>
+    <form id="image-form">
+        <label for="prompt">Prompt:</label>
+        <input type="text" id="prompt" name="prompt" required>
 
-            <label for="model">Modèle :</label>
-            <select id="model" name="model">
-                <option value="1">AnimagineXL-3.1</option>
-                <option value="2">AnimagineXL-V3</option>
-                <!-- Ajoute d'autres modèles ici -->
-            </select>
+        <label for="model">Modèle:</label>
+        <select id="model" name="model">
+            <option value="1">AnimagineXL-3.1</option>
+            <option value="2">AnimagineXL-V3</option>
+            <!-- Ajoutez d'autres options de modèles ici -->
+        </select>
 
-            <label for="ratio">Ratio :</label>
-            <select id="ratio" name="ratio">
-                <option value="1:1">1:1</option>
-                <option value="9:7">9:7</option>
-                <!-- Ajoute d'autres ratios ici -->
-            </select>
+        <label for="ratio">Ratio:</label>
+        <select id="ratio" name="ratio">
+            <option value="1:1">1:1</option>
+            <option value="9:7">9:7</option>
+            <!-- Ajoutez d'autres ratios ici -->
+        </select>
 
-            <button type="submit">Générer</button>
-        </form>
+        <label for="steps">Étapes:</label>
+        <input type="number" id="steps" name="steps" min="1">
 
-        <div id="image-container">
-            <h2>Image Générée :</h2>
-            <img id="generated-image" src="" alt="Generated Image">
-        </div>
+        <label for="cfg_scale">Cfg Scale:</label>
+        <input type="number" id="cfg_scale" name="cfg_scale" min="1">
+
+        <label for="loras">Loras (format: num:poids, num:poids):</label>
+        <input type="text" id="loras" name="loras">
+
+        <button type="submit">Générer l'Image</button>
+    </form>
+
+    <div id="result">
+        <img id="generated-image" src="" alt="Image générée" style="display:none;">
+        <p id="loading-message" style="display:none;">L'image est en cours de génération. Veuillez patienter...</p>
     </div>
 
     <script src="script.js"></script>
