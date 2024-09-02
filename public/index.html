@@ -7,7 +7,8 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+      background-color: #121212;
+      color: #e0e0e0;
       margin: 0;
       padding: 20px;
       display: flex;
@@ -18,14 +19,14 @@
 
     h1 {
       text-align: center;
-      color: #333;
+      color: #bb86fc;
     }
 
     form {
-      background-color: #fff;
+      background-color: #1e1e1e;
       padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
       width: 100%;
       max-width: 400px;
     }
@@ -34,6 +35,7 @@
       font-weight: bold;
       margin-top: 10px;
       display: block;
+      color: #bb86fc;
     }
 
     input[type="text"],
@@ -42,13 +44,15 @@
       width: 100%;
       padding: 8px;
       margin: 5px 0 10px 0;
-      border: 1px solid #ccc;
+      border: 1px solid #333;
       border-radius: 4px;
       box-sizing: border-box;
+      background-color: #333;
+      color: #e0e0e0;
     }
 
     input[type="submit"] {
-      background-color: #4CAF50;
+      background-color: #bb86fc;
       color: white;
       padding: 10px 15px;
       border: none;
@@ -58,36 +62,78 @@
     }
 
     input[type="submit"]:hover {
-      background-color: #45a049;
+      background-color: #9b6cc7;
+    }
+
+    .optional-parameters {
+      display: none;
+      margin-top: 10px;
+    }
+
+    .toggle-button {
+      background-color: #bb86fc;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      margin-top: 10px;
+    }
+
+    .toggle-button:hover {
+      background-color: #9b6cc7;
     }
   </style>
 </head>
 <body>
   <form action="/generate-image" method="get">
     <h1>Image Generator</h1>
+    
     <label for="prompt">Prompt:</label>
     <input type="text" id="prompt" name="prompt" required>
     
-    <label for="model">Model Index:</label>
-    <input type="number" id="model" name="modelIndex" min="1" value="1">
+    <label for="model">Model:</label>
+    <select id="model" name="modelIndex">
+      <option value="1">Model 1</option>
+      <option value="2">Model 2</option>
+      <option value="3">Model 3</option>
+      <!-- Ajoutez plus d'options de modèle si nécessaire -->
+    </select>
     
     <label for="ratio">Ratio:</label>
     <select id="ratio" name="ratio">
       <option value="1:1">1:1</option>
       <option value="9:7">9:7</option>
-      <!-- Ajoutez plus d'options si nécessaire -->
+      <!-- Ajoutez plus d'options de ratio si nécessaire -->
     </select>
     
-    <label for="steps">Steps:</label>
-    <input type="number" id="steps" name="steps">
+    <button type="button" class="toggle-button" onclick="toggleOptionalParams()">Optional Parameters &#9660;</button>
     
-    <label for="cfg_scale">CFG Scale:</label>
-    <input type="number" id="cfg_scale" name="cfg_scale">
-    
-    <label for="loras">Loras:</label>
-    <input type="text" id="loras" name="loras" placeholder="1:0.5,2:1">
+    <div class="optional-parameters" id="optional-parameters">
+      <label for="steps">Steps:</label>
+      <input type="number" id="steps" name="steps">
+      
+      <label for="cfg_scale">CFG Scale:</label>
+      <input type="number" id="cfg_scale" name="cfg_scale">
+      
+      <label for="loras">Loras:</label>
+      <input type="text" id="loras" name="loras" placeholder="1:0.5,2:1">
+    </div>
     
     <input type="submit" value="Generate Image">
   </form>
+
+  <script>
+    function toggleOptionalParams() {
+      const optionalParams = document.getElementById('optional-parameters');
+      if (optionalParams.style.display === 'none' || optionalParams.style.display === '') {
+        optionalParams.style.display = 'block';
+      } else {
+        optionalParams.style.display = 'none';
+      }
+    }
+  </script>
 </body>
 </html>
