@@ -1,48 +1,36 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Générateur d'Images</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Generator</title>
 </head>
 <body>
-    <h1>Générateur d'Images</h1>
-    <form id="image-form">
-        <label for="prompt">Prompt:</label>
-        <input type="text" id="prompt" name="prompt" required>
-
-        <label for="model">Modèle:</label>
-        <select id="model" name="model">
-            <option value="1">AnimagineXL-3.1</option>
-            <option value="2">AnimagineXL-V3</option>
-            <!-- Ajoutez d'autres options de modèles ici -->
-        </select>
-
-        <label for="ratio">Ratio:</label>
-        <select id="ratio" name="ratio">
-            <option value="1:1">1:1</option>
-            <option value="9:7">9:7</option>
-            <!-- Ajoutez d'autres ratios ici -->
-        </select>
-
-        <label for="steps">Étapes:</label>
-        <input type="number" id="steps" name="steps" min="1">
-
-        <label for="cfg_scale">Cfg Scale:</label>
-        <input type="number" id="cfg_scale" name="cfg_scale" min="1">
-
-        <label for="loras">Loras (format: num:poids, num:poids):</label>
-        <input type="text" id="loras" name="loras">
-
-        <button type="submit">Générer l'Image</button>
-    </form>
-
-    <div id="result">
-        <img id="generated-image" src="" alt="Image générée" style="display:none;">
-        <p id="loading-message" style="display:none;">L'image est en cours de génération. Veuillez patienter...</p>
-    </div>
-
-    <script src="script.js"></script>
+  <h1>Image Generator</h1>
+  <form action="/generate-image" method="get">
+    <label for="prompt">Prompt:</label>
+    <input type="text" id="prompt" name="prompt" required>
+    <br>
+    <label for="model">Model Index:</label>
+    <input type="number" id="model" name="modelIndex" min="1" value="1">
+    <br>
+    <label for="ratio">Ratio:</label>
+    <select id="ratio" name="ratio">
+      <option value="1:1">1:1</option>
+      <option value="9:7">9:7</option>
+      <!-- Ajoutez plus d'options si nécessaire -->
+    </select>
+    <br>
+    <label for="steps">Steps:</label>
+    <input type="number" id="steps" name="steps">
+    <br>
+    <label for="cfg_scale">CFG Scale:</label>
+    <input type="number" id="cfg_scale" name="cfg_scale">
+    <br>
+    <label for="loras">Loras:</label>
+    <input type="text" id="loras" name="loras" placeholder="1:0.5,2:1">
+    <br>
+    <input type="submit" value="Generate Image">
+  </form>
 </body>
 </html>
