@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: 'Roboto', sans-serif;
-      background: linear-gradient(135deg, #2a2a72, #009ffd);
+      background: linear-gradient(135deg, #1b1b2f, #3c096c);
       color: #f0f0f0;
       margin: 0;
       padding: 20px;
@@ -20,19 +20,31 @@
 
     h1 {
       text-align: center;
-      color: #f39c12;
+      color: #9d4edd;
       font-size: 2.5rem;
       margin-bottom: 20px;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     form {
-      background: linear-gradient(135deg, #3b3b98, #1e3799);
+      background: linear-gradient(135deg, #240046, #5a189a);
       padding: 20px;
       border-radius: 20px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
       width: 100%;
       max-width: 500px;
       margin-bottom: 30px;
+      animation: slideIn 1.5s ease-in-out;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
 
     label {
@@ -51,13 +63,13 @@
       border: 1px solid #333;
       border-radius: 10px;
       box-sizing: border-box;
-      background-color: #2f2f2f;
+      background-color: #2c003e;
       color: #f0f0f0;
       font-size: 1rem;
     }
 
     input[type="submit"] {
-      background-color: #f39c12;
+      background-color: #7209b7;
       color: white;
       padding: 12px;
       border: none;
@@ -65,11 +77,12 @@
       cursor: pointer;
       width: 100%;
       font-size: 1.1rem;
-      transition: background-color 0.3s;
+      transition: background-color 0.3s, transform 0.3s;
     }
 
     input[type="submit"]:hover {
-      background-color: #e67e22;
+      background-color: #560bad;
+      transform: scale(1.05);
     }
 
     .optional-parameters {
@@ -104,6 +117,7 @@
       width: 100%;
       text-align: center;
       margin-top: 20px;
+      display: none;
     }
 
     .image-container img {
@@ -111,12 +125,12 @@
       height: auto;
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+      animation: fadeInImage 1s ease-in-out;
     }
 
-    .image-container h2 {
-      color: #f39c12;
-      font-size: 1.5rem;
-      margin-bottom: 15px;
+    @keyframes fadeInImage {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .loading-message {
@@ -195,7 +209,7 @@
 
   <div class="image-container" id="image-container">
     <h2>Generated Image</h2>
-    <img id="generated-image" src="" alt="Generated Image" style="display: none;">
+    <img id="generated-image" src="" alt="Generated Image">
   </div>
 
   <script>
@@ -213,15 +227,15 @@
 
       document.getElementById('loading-message').style.display = 'block';
       document.getElementById('loading-animation').style.display = 'block';
-      document.getElementById('generated-image').style.display = 'none';
-
+      document.getElementById('image-container').style.display = 'none';
+      
       fetch(url)
         .then(response => response.blob())
         .then(blob => {
           const imageUrl = URL.createObjectURL(blob);
           const imageElement = document.getElementById('generated-image');
           imageElement.src = imageUrl;
-          imageElement.style.display = 'block';
+          document.getElementById('image-container').style.display = 'block';
           document.getElementById('loading-message').style.display = 'none';
           document.getElementById('loading-animation').style.display = 'none';
         })
