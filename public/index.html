@@ -6,63 +6,107 @@
   <title>Image Generator</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #121212;
-      color: #e0e0e0;
+      font-family: 'Roboto', sans-serif;
+      background-color: #0e0e0e;
+      color: #ffffff;
       margin: 0;
       padding: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      background-image: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);
     }
 
     h1 {
       text-align: center;
-      color: #bb86fc;
+      color: #ffffff;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
 
     form {
-      background-color: #1e1e1e;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-      width: 100%;
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
       max-width: 400px;
+      width: 100%;
     }
 
     label {
       font-weight: bold;
-      margin-top: 10px;
       display: block;
-      color: #bb86fc;
+      margin-top: 20px;
+      color: #ffffff;
+      text-transform: uppercase;
+      font-size: 0.85rem;
     }
 
     input[type="text"],
     input[type="number"],
     select {
       width: 100%;
-      padding: 8px;
-      margin: 5px 0 10px 0;
-      border: 1px solid #333;
-      border-radius: 4px;
+      padding: 10px;
+      margin-top: 5px;
+      border: none;
+      border-radius: 5px;
       box-sizing: border-box;
-      background-color: #333;
-      color: #e0e0e0;
+      background-color: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    select:focus {
+      background-color: rgba(255, 255, 255, 0.25);
+      outline: none;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
     }
 
     input[type="submit"] {
-      background-color: #bb86fc;
+      background-color: #6a11cb;
+      background-image: linear-gradient(315deg, #6a11cb 0%, #2575fc 74%);
       color: white;
-      padding: 10px 15px;
+      padding: 15px;
       border: none;
-      border-radius: 4px;
+      border-radius: 5px;
       cursor: pointer;
       width: 100%;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      margin-top: 20px;
     }
 
     input[type="submit"]:hover {
-      background-color: #9b6cc7;
+      background-image: linear-gradient(315deg, #2575fc 0%, #6a11cb 74%);
+      transform: scale(1.05);
+    }
+
+    .toggle-button {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 1rem;
+      text-align: left;
+      margin-top: 20px;
+      transition: background-color 0.3s ease;
+    }
+
+    .toggle-button:hover {
+      background-color: rgba(255, 255, 255, 0.3);
     }
 
     .optional-parameters {
@@ -70,20 +114,18 @@
       margin-top: 10px;
     }
 
-    .toggle-button {
-      background-color: #bb86fc;
-      color: white;
-      padding: 8px 15px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      width: 100%;
-      text-align: left;
+    .optional-parameters label {
       margin-top: 10px;
     }
 
-    .toggle-button:hover {
-      background-color: #9b6cc7;
+    .optional-parameters input[type="number"] {
+      margin-top: 5px;
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.4rem;
+      }
     }
   </style>
 </head>
@@ -128,10 +170,13 @@
   <script>
     function toggleOptionalParams() {
       const optionalParams = document.getElementById('optional-parameters');
+      const toggleButton = document.querySelector('.toggle-button');
       if (optionalParams.style.display === 'none' || optionalParams.style.display === '') {
         optionalParams.style.display = 'block';
+        toggleButton.innerHTML = 'Optional Parameters &#9650;';
       } else {
         optionalParams.style.display = 'none';
+        toggleButton.innerHTML = 'Optional Parameters &#9660;';
       }
     }
   </script>
