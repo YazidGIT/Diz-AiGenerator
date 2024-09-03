@@ -71,7 +71,7 @@
     input[type="submit"]:hover {
       background-color: #9b59b6;
     }
-    input#prompt::placeholder{
+    input#prompt{
       font-size:1.2rem;
       color: #333;
       opacity: 1;
@@ -108,7 +108,7 @@
       width: 100%;
       max-width: 500px;
       height: 100%;
-      max-height:400px;
+      max-height:600px;
       overflow: hidden;
       text-align: center;
       margin-top: 20px;
@@ -169,17 +169,17 @@
   <h1>Image Generator</h1>
   
   <form action="/generate-image" method="get" onsubmit="return generateImage(event)">
-    <label for="prompt">Prompt:</label>
+    <label for="prompt">Prompt</label>
     <input type="text" id="prompt" name="prompt" required>
     
-    <label for="model">Model:</label>
+    <label for="model">Model</label>
     <select id="model" name="modelIndex">
       <option value="1">Model 1</option>
       <option value="2">Model 2</option>
       <option value="3">Model 3</option>
     </select>
     
-    <label for="ratio">Ratio:</label>
+    <label for="ratio">Ratio</label>
     <select id="ratio" name="ratio">
       <option value="1:1">1:1</option>
       <option value="9:7">9:7</option>
