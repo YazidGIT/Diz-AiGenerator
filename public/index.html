@@ -42,7 +42,6 @@
       color: #c39bd3;
     }
 
-   
     input[type="number"],
     select {
       width: 100%;
@@ -54,9 +53,10 @@
       background-color: #333333;
       color: #e0e0e0;
       font-size: 1rem;
+      transition: background-color 0.3s ease;
     }
-    input[type="text"]
-     {
+
+    input[type="text"] {
       width: 100%;
       padding: 10px;
       margin: 5px 0 10px 0;
@@ -66,6 +66,7 @@
       background-color: #f1f1f7;
       color: #333;
       font-size: 1rem;
+      transition: background-color 0.3s ease;
     }
 
     input[type="submit"] {
@@ -77,7 +78,7 @@
       cursor: pointer;
       width: 100%;
       font-size: 1.1rem;
-      transition: background-color 0.3s;
+      transition: background-color 0.3s ease;
     }
 
     input[type="submit"]:hover {
@@ -100,7 +101,7 @@
       text-align: left;
       margin-top: 10px;
       font-size: 1rem;
-      transition: background-color 0.3s;
+      transition: background-color 0.3s ease;
     }
 
     .toggle-button:hover {
@@ -113,16 +114,20 @@
       border-radius: 20px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
       width: 100%;
+      max-width: 500px;
+      height: 100%;
+      max-height: 400px;
       text-align: center;
       margin-top: 20px;
       max-height: 100%;
-      display: none; /* Cacher initialement */
+      display: none;
     }
 
     .image-container img {
       max-width: 100%;
       max-height: 100%;
       height: auto;
+      width:auto;
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
@@ -188,7 +193,6 @@
       <option value="9:7">9:7</option>
     </select>
   
-    
     <button type="button" class="toggle-button" onclick="toggleOptionalParams()">Optional Parameters &#9660;</button>
     
     <div class="optional-parameters" id="optional-parameters">
@@ -197,9 +201,10 @@
       
       <label for="cfg_scale">CFG Scale:</label>
       <input type="number" id="cfg_scale" name="cfg_scale">
-      
+
       <label for="loras">Loras:</label>
-      <input type="text" id="loras" name="loras" placeholder="1:0.5,2:1">
+      <div id="loras-container"></div>
+      <button type="button" onclick="addLora()">+ Add Lora</button>
     </div>
     
     <input type="submit" value="Generate Image">
@@ -219,11 +224,60 @@
       optionalParams.style.display = optionalParams.style.display === 'none' || optionalParams.style.display === '' ? 'block' : 'none';
     }
 
+    function addLora() {
+      const container = document.getElementById('loras-container');
+      const newLoraGroup = document.createElement('div');
+      newLoraGroup.className = 'loras-group';
+      
+      const select = document.createElement('select');
+      select.name = 'loras[]';
+      select.className = 'lora-select';
+      select.innerHTML = `
+        <option value="" selected>Aucun Lora</option>
+        <option value="1">Lora 1</option>
+        <option value="2">Lora 2</option>
+        <option value="3">Lora 3</option>
+        <!-- Ajoutez d'autres Loras ici si nécessaire -->
+      `;
+
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.name = 'loras_weight[]';
+      input.placeholder = 'Weight';
+      input.step = '0.1';
+      input.min = '0';
+      input.max = '1';
+
+      newLoraGroup.appendChild(select);
+      newLoraGroup.appendChild(input);
+      container.appendChild(newLoraGroup);
+    }
+
     function generateImage(event) {
       event.preventDefault();
       const form = event.target;
+
+      // Construire la chaîne Loras ici
+      const loras = document.querySelectorAll('.lora-select');
+      const weights = document.querySelectorAll('input[name="loras_weight[]"]');
+      let loraString = '';
+
+      loras.forEach((lora, index) => {
+        const loraValue = lora.value;
+        const weightValue = weights[index].value;
+
+        if (loraValue && weightValue) {
+          if (loraString) {
+            loraString += ',';
+          }
+          loraString += `${loraValue}:${weightValue}`;
+        }
+      });
+
+      // Ajouter la chaîne Loras à un champ caché ou à un paramètre d'URL
       const url = new URL(form.action);
       const params = new URLSearchParams(new FormData(form));
+      params.append('loras', loraString);
       url.search = params.toString();
 
       document.getElementById('loading-message').style.display = 'block';
