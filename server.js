@@ -99,8 +99,15 @@ const models = {
     cfg_scale: 8,
     steps: 27,
     negative_prompt: "nsfw, lowres, (bad), text, error, fewer, extra, missing, worst quality, jpeg artifacts, low quality, watermark, unfinished, displeasing, oldest, early, chromatic aberration, signature, extra digits, artistic error, username, scan, [abstract]",
+    pre_prompt: "masterpiece, best quality, very aesthetic, absurdres,"
+  },
+  30: { name: "AnimagineXL-3.1",
+    cfg_scale: 8,
+    steps: 27,
+    negative_prompt: "lowres, (bad), text, error, fewer, extra, missing, worst quality, jpeg artifacts, low quality, watermark, unfinished, displeasing, oldest, early, chromatic aberration, signature, extra digits, artistic error, username, scan, [abstract]",
     pre_prompt: " "
   },
+
 2: { name: "AnimagineXL-V3",
     cfg_scale: 7,
     steps: 30,
