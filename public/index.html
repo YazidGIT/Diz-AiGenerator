@@ -53,7 +53,6 @@
       background-color: #333333;
       color: #e0e0e0;
       font-size: 1rem;
-      transition: background-color 0.3s ease;
     }
 
     input[type="text"] {
@@ -66,7 +65,6 @@
       background-color: #f1f1f7;
       color: #333;
       font-size: 1rem;
-      transition: background-color 0.3s ease;
     }
 
     input[type="submit"] {
@@ -78,7 +76,7 @@
       cursor: pointer;
       width: 100%;
       font-size: 1.1rem;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.3s;
     }
 
     input[type="submit"]:hover {
@@ -101,7 +99,7 @@
       text-align: left;
       margin-top: 10px;
       font-size: 1rem;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.3s;
     }
 
     .toggle-button:hover {
@@ -114,9 +112,6 @@
       border-radius: 20px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
       width: 100%;
-      max-width: 500px;
-      height: 100%;
-      max-height: 400px;
       text-align: center;
       margin-top: 20px;
       max-height: 100%;
@@ -127,7 +122,6 @@
       max-width: 100%;
       max-height: 100%;
       height: auto;
-      width:auto;
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
@@ -171,6 +165,33 @@
         font-size: 1rem;
       }
     }
+
+    /* Styles for dynamic Lora input */
+    .lora-container {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .lora-container select,
+    .lora-container input[type="number"] {
+      flex: 1;
+      margin-right: 10px;
+    }
+
+    .lora-container button {
+      padding: 10px 15px;
+      background-color: #8e44ad;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .lora-container button:hover {
+      background-color: #9b59b6;
+    }
   </style>
 </head>
 <body>
@@ -201,10 +222,18 @@
       
       <label for="cfg_scale">CFG Scale:</label>
       <input type="number" id="cfg_scale" name="cfg_scale">
-
-      <label for="loras">Loras:</label>
-      <div id="loras-container"></div>
-      <button type="button" onclick="addLora()">+ Add Lora</button>
+      
+      <div id="loras-section">
+        <label>Loras:</label>
+        <div class="lora-container">
+          <select name="lora1-name">
+            <option value="lora1">Lora 1</option>
+            <option value="lora2">Lora 2</option>
+          </select>
+          <input type="number" name="lora1-weight" placeholder="Weight" step="0.1" min="0" max="5">
+          <button type="button" onclick="addLora()">+</button>
+        </div>
+      </div>
     </div>
     
     <input type="submit" value="Generate Image">
@@ -224,65 +253,46 @@
       optionalParams.style.display = optionalParams.style.display === 'none' || optionalParams.style.display === '' ? 'block' : 'none';
     }
 
+    let loraCount = 1;
+
     function addLora() {
-      const container = document.getElementById('loras-container');
-      const newLoraGroup = document.createElement('div');
-      newLoraGroup.className = 'loras-group';
+      loraCount++;
+      const lorasSection = document.getElementById('loras-section');
       
-      const select = document.createElement('select');
-      select.name = 'loras[]';
-      select.className = 'lora-select';
-      select.innerHTML = `
-        <option value="" selected>Aucun Lora</option>
-        <option value="1">Lora 1</option>
-        <option value="2">Lora 2</option>
-        <option value="3">Lora 3</option>
-        <!-- Ajoutez d'autres Loras ici si nécessaire -->
+      const newLoraContainer = document.createElement('div');
+      newLoraContainer.className = 'lora-container';
+      
+      const newLoraSelect = document.createElement('select');
+      newLoraSelect.name = `lora${loraCount}-name`;
+      newLoraSelect.innerHTML = `
+        <option value="lora1">Lora 1</option>
+        <option value="lora2">Lora 2</option>
       `;
+      
+      const newLoraInput = document.createElement('input');
+      newLoraInput.type = 'number';
+      newLoraInput.name = `lora${loraCount}-weight`;
+      newLoraInput.placeholder = 'Weight';
+      newLoraInput.step = '0.1';
+      newLoraInput.min = '0';
+      newLoraInput.max = '5';
 
-      const input = document.createElement('input');
-      input.type = 'number';
-      input.name = 'loras_weight[]';
-      input.placeholder = 'Weight';
-      input.step = '0.1';
-      input.min = '0';
-      input.max = '1';
+      newLoraContainer.appendChild(newLoraSelect);
+      newLoraContainer.appendChild(newLoraInput);
 
-      newLoraGroup.appendChild(select);
-      newLoraGroup.appendChild(input);
-      container.appendChild(newLoraGroup);
+      lorasSection.appendChild(newLoraContainer);
     }
 
     function generateImage(event) {
       event.preventDefault();
       const form = event.target;
-
-      // Construire la chaîne Loras ici
-      const loras = document.querySelectorAll('.lora-select');
-      const weights = document.querySelectorAll('input[name="loras_weight[]"]');
-      let loraString = '';
-
-      loras.forEach((lora, index) => {
-        const loraValue = lora.value;
-        const weightValue = weights[index].value;
-
-        if (loraValue && weightValue) {
-          if (loraString) {
-            loraString += ',';
-          }
-          loraString += `${loraValue}:${weightValue}`;
-        }
-      });
-
-      // Ajouter la chaîne Loras à un champ caché ou à un paramètre d'URL
       const url = new URL(form.action);
       const params = new URLSearchParams(new FormData(form));
-      params.append('loras', loraString);
       url.search = params.toString();
 
       document.getElementById('loading-message').style.display = 'block';
       document.getElementById('loading-animation').style.display = 'block';
-      document.getElementById('image-container').style.display = 'none'; // Cacher la section d'image
+      document.getElementById('image-container').style.display = 'none';
 
       fetch(url)
         .then(response => response.blob())
@@ -290,7 +300,7 @@
           const imageUrl = URL.createObjectURL(blob);
           const imageElement = document.getElementById('generated-image');
           imageElement.src = imageUrl;
-          document.getElementById('image-container').style.display = 'block'; // Afficher la section d'image une fois l'image chargée
+          document.getElementById('image-container').style.display = 'block';
           document.getElementById('loading-message').style.display = 'none';
           document.getElementById('loading-animation').style.display = 'none';
         })
