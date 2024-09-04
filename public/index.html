@@ -110,7 +110,7 @@
       max-width: 500px;
       text-align: center;
       margin-top: 20px;
-      max-height: 400px;
+      max-height: 600px;
       display: none; /* Cacher initialement */
     }
 
@@ -168,39 +168,66 @@
   <h1>Image Generator</h1>
   
   <form action="/generate-image" method="get" onsubmit="return generateImage(event)">
-    <label for="prompt">Prompt:</label>
-    <input type="text" id="prompt" name="prompt" required>
+    <label for="prompt">Prompt</label>
+    <input type="text" id="prompt" name="prompt" placeholder="Entrez votre prompt..." required>
     
-    <label for="model">Model:</label>
+    <label for="model">Modèle</label>
     <select id="model" name="modelIndex">
-      <option value="1">Model 1</option>
-      <option value="2">Model 2</option>
-      <option value="3">Model 3</option>
+      <option value="1">Animagine XL-3.1</option>
+<option value="2">Animagine XL-V3</option>
+<option value="3">4thtail Anime Hentai-v0.4.5</option>
+<option value="4">CAT-Citron Anime Treasure-SDXL</option>
+<option value="5">AAMXL Anime Mix-v1.0</option>
+<option value="6">NUKE-Disney Pixar Style SDXL-v1</option>
+<option value="7">Comics Characters Database UNCENSORED-3D</option>
+<option value="8">FLUX.1-dev-fp8</option>
+<option value="9">Flux Unchained Artful NSFWcapableflux.dtuned-T5_8x8V1.1</option>
+<option value="10">FLUX HYPERTRAINED-DREAMDIFFUSION-BYDICE-V1</option>
+<option value="11">Sudachi-V1</option>
+<option value="12">Oxalis Anime Hentai Model-OAH-1</option>
+<option value="13">Perfect World V6-V6</option>
+<option value="14">Chillout Mix-Ni</option>
+<option value="15">Astr Anime-6.0</option>
+<option value="16">Meina Hentai v3-3</option>
+<option value="17">3D Cartoon Vision-V1</option>
+<option value="18">Open Dalle Turbo-V1.1</option>
+<option value="19">Vivaldi XL-Open DallE3 Anime Model-v1.0</option>
+<option value="20">Open Dalle v1.1-1.1</option>
     </select>
     
-    <label for="ratio">Ratio:</label>
+    <label for="ratio">Ratio de l'image</label>
     <select id="ratio" name="ratio">
-      <option value="1:1">1:1</option>
-      <option value="9:7">9:7</option>
+      <option value="1:1">1:1 (Carré)</option>
+<option value="9:7">9:7 (Paysage)</option>
+<option value="7:9">7:9 (Portrait)</option>
+<option value="19:13">19:13 (Paysage)</option>
+<option value="13:19">13:19 (Portrait)</option>
+<option value="7:4">7:4 (Large)</option>
+<option value="4:7">4:7 (Grand)</option>
+<option value="12:5">12:5 (Large)</option>
+<option value="5:12">5:12 (Grand)</option>
+<option value="3:2">3:2 (Paysage)</option>
+<option value="2:3">2:3 (Portrait)</option>
+
     </select>
     
     <button type="button" class="toggle-button" onclick="toggleOptionalParams()">Optional Parameters &#9660;</button>
     
     <div class="optional-parameters" id="optional-parameters">
-      <label for="steps">Steps:</label>
+      <label for="steps">Steps (1-35)</label>
       <input type="number" id="steps" name="steps">
       
-      <label for="cfg_scale">CFG Scale:</label>
+      <label for="cfg_scale">CFG Scale (1-10)</label>
       <input type="number" id="cfg_scale" name="cfg_scale">
       
-      <label for="loras">Loras:</label>
-      <input type="text" id="loras" name="loras" placeholder="1:0.5,2:1">
+      <label for="loras">Loras</label>
+      <input type="text" id="loras" name="loras" placeholder="Ex: 1:0.5,2:1">
     </div>
     
     <input type="submit" value="Generate Image">
   </form>
 
-  <div class="loading-message" id="loading-message">Please wait, generating image...</div>
+  <div class="loading-message" id="loading-message">Veuillez patientez, Génération de l'image en cours...</div>
   <div class="loading-animation" id="loading-animation"></div>
 
   <div class="image-container" id="image-container">
