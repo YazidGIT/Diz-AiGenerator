@@ -56,9 +56,10 @@
       font-size: 1rem;
     }
 
-    input#prompt[type="text"] { 
+    input[type="text"] { 
       background-color: #f2f2f6;
       border-radius: 13px;
+      color: #252424;
     }
 
     input[type="submit"] {
@@ -171,7 +172,7 @@
     <label for="prompt">Prompt</label>
     <input type="text" id="prompt" name="prompt" placeholder="Entrez votre prompt..." required>
     
-    <label for="model">Modèle</label>
+    <label for="model">Model</label>
     <select id="model" name="modelIndex">
       <option value="1">Animagine XL-3.1</option>
 <option value="2">Animagine XL-V3</option>
@@ -190,12 +191,15 @@
 <option value="15">Astr Anime-6.0</option>
 <option value="16">Meina Hentai v3-3</option>
 <option value="17">3D Cartoon Vision-V1</option>
-<option value="18">Open Dalle Turbo-V1.1</option>
-<option value="19">Vivaldi XL-Open DallE3 Anime Model-v1.0</option>
-<option value="20">Open Dalle v1.1-1.1</option>
+<option value="18">7th anime XL B</option>
+<option value="19">Vivaldi Xl Open Dalle3 Anime</option>
+<option value="20">Kohaku Xl Epsilon</option>
+<option value="21">7th anime XL A</option>
+<option value="30">Animage-Xl</option>
+
     </select>
     
-    <label for="ratio">Ratio de l'image</label>
+    <label for="ratio">Ratio:</label>
     <select id="ratio" name="ratio">
       <option value="1:1">1:1 (Carré)</option>
 <option value="9:7">9:7 (Paysage)</option>
