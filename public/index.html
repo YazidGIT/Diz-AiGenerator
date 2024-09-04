@@ -51,7 +51,7 @@
       border: 1px solid #333;
       border-radius: 10px;
       box-sizing: border-box;
-      background-color: #2f2f3f;
+      background-color: #333333;
       color: #e0e0e0;
       font-size: 1rem;
     }
@@ -174,7 +174,7 @@
   <form action="/generate-image" method="get" onsubmit="return generateImage(event)">
     <label for="prompt">Prompt:</label>
     <input type="text" id="prompt" name="prompt" required>
-    
+   
     <label for="model">Model:</label>
     <select id="model" name="modelIndex">
       <option value="1">Model 1</option>
@@ -187,6 +187,7 @@
       <option value="1:1">1:1</option>
       <option value="9:7">9:7</option>
     </select>
+  
     
     <button type="button" class="toggle-button" onclick="toggleOptionalParams()">Optional Parameters &#9660;</button>
     
