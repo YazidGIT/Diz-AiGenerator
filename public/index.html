@@ -42,6 +42,7 @@
       color: #c39bd3;
     }
 
+    input[type="text"],
     input[type="number"],
     select {
       width: 100%;
@@ -50,21 +51,14 @@
       border: 1px solid #333;
       border-radius: 10px;
       box-sizing: border-box;
-      background-color: #333333;
+      background-color: #2f2f3f;
       color: #e0e0e0;
       font-size: 1rem;
     }
 
-    input[type="text"] {
-      width: 100%;
-      padding: 10px;
-      margin: 5px 0 10px 0;
-      border: 1px solid #333;
-      border-radius: 15px;
-      box-sizing: border-box;
-      background-color: #f1f1f7;
-      color: #333;
-      font-size: 1rem;
+    input#prompt[type="text"] { 
+      background-color: #f2f2f6;
+      border-radius: 13px;
     }
 
     input[type="submit"] {
@@ -112,16 +106,19 @@
       border-radius: 20px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
       width: 100%;
+      height: 100%;
+      max-width: 500px;
       text-align: center;
       margin-top: 20px;
-      max-height: 100%;
-      display: none;
+      max-height: 400px;
+      display: none; /* Cacher initialement */
     }
 
     .image-container img {
       max-width: 100%;
       max-height: 100%;
       height: auto;
+      width: auto;
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
@@ -165,33 +162,6 @@
         font-size: 1rem;
       }
     }
-
-    /* Styles for dynamic Lora input */
-    .lora-container {
-      display: flex;
-      align-items: center;
-      margin-top: 10px;
-    }
-
-    .lora-container select,
-    .lora-container input[type="number"] {
-      flex: 1;
-      margin-right: 10px;
-    }
-
-    .lora-container button {
-      padding: 10px 15px;
-      background-color: #8e44ad;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-
-    .lora-container button:hover {
-      background-color: #9b59b6;
-    }
   </style>
 </head>
 <body>
@@ -200,7 +170,7 @@
   <form action="/generate-image" method="get" onsubmit="return generateImage(event)">
     <label for="prompt">Prompt:</label>
     <input type="text" id="prompt" name="prompt" required>
-   
+    
     <label for="model">Model:</label>
     <select id="model" name="modelIndex">
       <option value="1">Model 1</option>
@@ -213,7 +183,7 @@
       <option value="1:1">1:1</option>
       <option value="9:7">9:7</option>
     </select>
-  
+    
     <button type="button" class="toggle-button" onclick="toggleOptionalParams()">Optional Parameters &#9660;</button>
     
     <div class="optional-parameters" id="optional-parameters">
@@ -223,17 +193,8 @@
       <label for="cfg_scale">CFG Scale:</label>
       <input type="number" id="cfg_scale" name="cfg_scale">
       
-      <div id="loras-section">
-        <label>Loras:</label>
-        <div class="lora-container">
-          <select name="lora1-name">
-            <option value="lora1">Lora 1</option>
-            <option value="lora2">Lora 2</option>
-          </select>
-          <input type="number" name="lora1-weight" placeholder="Weight" step="0.1" min="0" max="5">
-          <button type="button" onclick="addLora()">+</button>
-        </div>
-      </div>
+      <label for="loras">Loras:</label>
+      <input type="text" id="loras" name="loras" placeholder="1:0.5,2:1">
     </div>
     
     <input type="submit" value="Generate Image">
@@ -253,36 +214,6 @@
       optionalParams.style.display = optionalParams.style.display === 'none' || optionalParams.style.display === '' ? 'block' : 'none';
     }
 
-    let loraCount = 1;
-
-    function addLora() {
-      loraCount++;
-      const lorasSection = document.getElementById('loras-section');
-      
-      const newLoraContainer = document.createElement('div');
-      newLoraContainer.className = 'lora-container';
-      
-      const newLoraSelect = document.createElement('select');
-      newLoraSelect.name = `lora${loraCount}-name`;
-      newLoraSelect.innerHTML = `
-        <option value="lora1">Lora 1</option>
-        <option value="lora2">Lora 2</option>
-      `;
-      
-      const newLoraInput = document.createElement('input');
-      newLoraInput.type = 'number';
-      newLoraInput.name = `lora${loraCount}-weight`;
-      newLoraInput.placeholder = 'Weight';
-      newLoraInput.step = '0.1';
-      newLoraInput.min = '0';
-      newLoraInput.max = '5';
-
-      newLoraContainer.appendChild(newLoraSelect);
-      newLoraContainer.appendChild(newLoraInput);
-
-      lorasSection.appendChild(newLoraContainer);
-    }
-
     function generateImage(event) {
       event.preventDefault();
       const form = event.target;
@@ -292,7 +223,7 @@
 
       document.getElementById('loading-message').style.display = 'block';
       document.getElementById('loading-animation').style.display = 'block';
-      document.getElementById('image-container').style.display = 'none';
+      document.getElementById('image-container').style.display = 'none'; // Cacher la section d'image
 
       fetch(url)
         .then(response => response.blob())
@@ -300,7 +231,7 @@
           const imageUrl = URL.createObjectURL(blob);
           const imageElement = document.getElementById('generated-image');
           imageElement.src = imageUrl;
-          document.getElementById('image-container').style.display = 'block';
+          document.getElementById('image-container').style.display = 'block'; // Afficher la section d'image une fois l'image chargée
           document.getElementById('loading-message').style.display = 'none';
           document.getElementById('loading-animation').style.display = 'none';
         })
