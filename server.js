@@ -1,12 +1,12 @@
 const express = require('express');
 const axios = require('axios');
-const fs = require('fs');
 const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 const tokens = [
+"96121b1d-4d28-40b6-ab84-a6d76e3b15df",
 "c7d20e0e-2fe0-4c97-8de2-eb32ba150000",
 "2bfd60e8-59e7-4d66-b780-b79b42782175",
 "c6d207ff-cb60-48c2-87ae-87009a80cc9c",
@@ -15,22 +15,23 @@ const tokens = [
 "9cb6873c-26b4-4a97-8ff7-31d272fd9a02",
 "0f099a24-b967-41a6-9ee4-f9fadcaceafc",
 "3315b917-9914-4090-b5bc-d97b4db05284",
-"971f948d-2d80-4152-a5a9-b6883378decf"
-];
+"971f948d-2d80-4152-a5a9-b6883378decf"];
 let tokenIndex = 0;
 
 const ratios = {
-  '1:1': { width: 1024, height: 1024 },
-  '9:7': { width: 1024, height: 796 },
-  '7:9': { width: 796, height: 1024 },
-  '19:13': { width: 1024, height: 700 },
-  '13:19': { width: 700, height: 1024 },
-  '7:4': { width: 1024, height: 585 },
-  '4:7': { width: 585, height: 1024 },
-  '12:5': { width: 1024, height: 426 },
-  '5:12': { width: 426, height: 1024 },
-  '3:2': { width: 1024, height: 682 },
-  '2:3': { width: 682, height: 1024 }
+   '1:1': { width: 1024, height: 1024 },
+  '9:7': { width: 1152, height: 896 },
+  '7:9': { width: 896, height: 1152 },
+  '19:13': { width: 1216, height: 832 },
+  '13:19': { width: 832, height: 1216 },
+  '7:4': { width: 1344, height: 768 },
+  '4:7': { width: 768, height: 1344 },
+  '12:5': { width: 1536, height: 640 },
+  '5:12': { width: 640, height: 1536 },
+  '3:2': { width: 1440, height: 900 },
+  '2:3': { width: 900, height: 1440 },
+ '2:2': { width: 1536, height: 1536 }
+
 };
 
 const loras = {
@@ -41,8 +42,8 @@ const loras = {
 5: "Pony-RetroAnime-V2",
 6: "AnimeEnhancerXL-v5",
 7: "DetailedAnimeStyleXL-V01",
-8: "NijiBackgroundXL-v1-normal",
-9: "niji5-v6",
+8: "niji5-v6",
+9: "MidjourneyAnimeStyleXL-v1",
 10:"ExtremelyRealisticStyleXLLoRA-V1.0",
 11: "ExtraDetailerXL-v1",
 12: "DetailTweakerXL-3.0",
@@ -92,22 +93,30 @@ const loras = {
   56: "ExtremelyRealisticStyleLoRA-V1.0",
   57: "AddUltraDetails-v1",
   58: "Shinyoiledskin2.0LyCORISLoRA-v2.0LyCORI",
+  59: "xl_more_art-fullxl_realEnhancer-v1",
+  60: "midjourneyanimestyle-v1.0",
+  61: "NijiBackgroundXL-v1-normal",
 };
 
 const models = {
+  30: { name: "AnimagineXL-3.1",
+    cfg_scale: 8,
+    steps: 27,
+    negative_prompt: "nsfw, lowres, (bad), text, error, fewer, extra, missing, worst quality, jpeg artifacts, low quality, watermark, unfinished, displeasing, oldest, early, chromatic aberration, signature, extra digits, artistic error, username, scan, [abstract]",
+    pre_prompt: ",aesthetic style,detailled hair, perfect eyes, perfect anime rendering, midjourney, anime artwork, studio anime, anime style,masterpiece, detailled, best quality, Epic view, ultra detailled"
+  }, 
+   40: { name: "AnimagineXL-3.1",
+    cfg_scale: 8,
+    steps: 27,
+    negative_prompt: "nsfw, lowres, (bad), text, error, fewer, extra, missing, worst quality, jpeg artifacts, low quality, watermark, unfinished, displeasing, oldest, early, chromatic aberration, signature, extra digits, artistic error, username, scan, [abstract]",
+    pre_prompt: " "
+  },
   1: { name: "AnimagineXL-3.1",
     cfg_scale: 8,
     steps: 27,
     negative_prompt: "nsfw, lowres, (bad), text, error, fewer, extra, missing, worst quality, jpeg artifacts, low quality, watermark, unfinished, displeasing, oldest, early, chromatic aberration, signature, extra digits, artistic error, username, scan, [abstract]",
-    pre_prompt: "masterpiece, best quality, very aesthetic, absurdres,"
-  },
-  30: { name: "AnimagineXL-3.1",
-    cfg_scale: 8,
-    steps: 27,
-    negative_prompt: "lowres, (bad), text, error, fewer, extra, missing, worst quality, jpeg artifacts, low quality, watermark, unfinished, displeasing, oldest, early, chromatic aberration, signature, extra digits, artistic error, username, scan, [abstract]",
-    pre_prompt: " "
-  },
-
+    pre_prompt: "masterpiece, best quality, very aethestic, absurdres"
+  }, 
 2: { name: "AnimagineXL-V3",
     cfg_scale: 7,
     steps: 30,
@@ -232,11 +241,18 @@ const models = {
     negative_prompt: "(worst quality:1.6),(low quality:1.4),(normal quality:1.2),lowres,jpeg artifacts,long neck,long body,bad anatomy,bad hands,text,error,missing fingers,extra digit,fewer digits,cropped,signature,watermark,username,artist name,",
     pre_prompt: " "
 },
+   22: {
+    name: "CHIMERA-2",
+    cfg_scale: 9,
+    steps: 30,
+    negative_prompt: "worst quality, low quality, deformed, censored, bad anatomy, watermark, signature",
+    pre_prompt: " "
+},
 
-};
-app.use(express.static(path.join(__dirname, 'public')));
+ };
+
 app.get('/generate-image', async (req, res) => {
-  const { prompt, modelIndex = 1, sampler = 'Euler a', ratio = '1:1', steps, cfg_scale, loras: lorasQuery } = req.query;
+  const { prompt, modelIndex = 1, sampler = 'Euler a', ratio = '1:1', steps, cfg_scale, seed = -1, loras: lorasQuery } = req.query;
 
   if (!prompt) {
     return res.status(400).send('Prompt is required.');
@@ -252,8 +268,20 @@ app.get('/generate-image', async (req, res) => {
     return res.status(400).send('Invalid ratio specified.');
   }
 
-  const styledPrompt = `${modelConfig.pre_prompt}, ${prompt}`;
-  
+let { width, height } = aspectRatio;
+  if (modelIndex >= 11 && modelIndex <= 17) {
+    const maxSize = 1024;
+
+    // Si la largeur ou la hauteur est supérieure à 1024, ajuster en conservant les proportions
+    if (width > maxSize || height > maxSize) {
+      const ratioFactor = Math.min(maxSize / width, maxSize / height);
+      width = Math.round(width * ratioFactor);
+      height = Math.round(height * ratioFactor);
+    }
+  }
+
+  const styledPrompt = `${prompt}, ${modelConfig.pre_prompt}`;
+
   let lorasObj = {};
   if (lorasQuery) {
     const loraEntries = lorasQuery.split(',');
@@ -284,18 +312,21 @@ app.get('/generate-image', async (req, res) => {
           token: currentToken,
           sampler,
           steps: requestSteps,
-          width: aspectRatio.width,
-          height: aspectRatio.height,
+          width,
+          height,
           cfg_scale: requestCfgScale,
-          loras: lorasObj
+          loras: lorasObj,
+          seed,
+          stream: false
         }, {
-          responseType: 'stream'
+          responseType: 'json'
         });
 
         success = true;
       } catch (error) {
         if (error.response && error.response.status === 403) {
           console.log("Retrying Generation...");
+          tokenIndex = (tokenIndex + 1) % tokens.length;  // Rotate tokens on 403 error
         } else {
           throw new Error(error.message);
         }
@@ -303,24 +334,8 @@ app.get('/generate-image', async (req, res) => {
     }
 
     if (success) {
-      const imagePath = path.join(__dirname, 'cache', 'generated_image.png');
-      const imageStream = response.data;
-      const fileStream = fs.createWriteStream(imagePath);
-
-      if (!fs.existsSync(path.dirname(imagePath))) {
-        fs.mkdirSync(path.dirname(imagePath), { recursive: true });
-      }
-
-      imageStream.pipe(fileStream);
-
-      fileStream.on('finish', () => {
-        res.sendFile(imagePath);
-      });
-
-      fileStream.on('error', (err) => {
-        console.error("Stream error:", err);
-        res.status(500).send('Error generating image.');
-      });
+      const imageUrl = response.data.image_url;
+      res.json({ imageUrl });
     } else {
       res.status(500).send('Error generating image.');
     }
@@ -328,8 +343,6 @@ app.get('/generate-image', async (req, res) => {
     console.error(error);
     res.status(500).send('An error occurred.');
   }
-
-  tokenIndex = (tokenIndex + 1) % tokens.length;
 });
 
 app.listen(PORT, () => {
