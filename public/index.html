@@ -245,32 +245,32 @@
       optionalParams.style.display = optionalParams.style.display === 'none' || optionalParams.style.display === '' ? 'block' : 'none';
     }
 
-    function generateImage(event) {
-      event.preventDefault();
-      const form = event.target;
-      const url = new URL(form.action);
-      const params = new URLSearchParams(new FormData(form));
-      url.search = params.toString();
+function generateImage(event) {
+  event.preventDefault();
+  const form = event.target;
+  const url = new URL(form.action);
+  const params = new URLSearchParams(new FormData(form));
+  url.search = params.toString();
 
-      document.getElementById('loading-message').style.display = 'block';
-      document.getElementById('loading-animation').style.display = 'block';
-      document.getElementById('image-container').style.display = 'none'; // Cacher la section d'image
+  document.getElementById('loading-message').style.display = 'block';
+  document.getElementById('loading-animation').style.display = 'block';
+  document.getElementById('image-container').style.display = 'none'; // Cacher la section d'image
 
-      fetch(url)
-        .then(response => response.blob())
-        .then(blob => {
-          const imageUrl = URL.createObjectURL(blob);
-          const imageElement = document.getElementById('generated-image');
-          imageElement.src = imageUrl;
-          document.getElementById('image-container').style.display = 'block'; // Afficher la section d'image une fois l'image chargée
-          document.getElementById('loading-message').style.display = 'none';
-          document.getElementById('loading-animation').style.display = 'none';
-        })
-        .catch(error => {
-          console.error('Error generating image:', error);
-          document.getElementById('loading-message').style.display = 'none';
-          document.getElementById('loading-animation').style.display = 'none';
-        });
+  fetch(url)
+    .then(response => response.json())  // Changer response.blob() en response.json() pour gérer le JSON
+    .then(data => {
+      const imageUrl = data.imageUrl; // Extraire l'URL de l'image du JSON
+      const imageElement = document.getElementById('generated-image');
+      imageElement.src = imageUrl;
+      document.getElementById('image-container').style.display = 'block'; // Afficher la section d'image une fois l'image chargée
+      document.getElementById('loading-message').style.display = 'none';
+      document.getElementById('loading-animation').style.display = 'none';
+    })
+    .catch(error => {
+      console.error('Error generating image:', error);
+      document.getElementById('loading-message').style.display = 'none';
+      document.getElementById('loading-animation').style.display = 'none';
+    });
     }
   </script>
 </body>
