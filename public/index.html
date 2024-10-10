@@ -148,6 +148,28 @@
       margin-top: 10px;
     }
 
+    @keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8); /* Optionnel pour un effet de zoom */
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.image-container img {
+  opacity: 0; /* L'image commence invisible */
+  transition: opacity 0.5s ease, transform 0.5s ease; /* Pour un effet de transition fluide */
+}
+
+.image-container.show img {
+  opacity: 1; /* L'image devient visible */
+  animation: fadeIn 0.8s ease; /* Appliquer l'animation de fondu en entrée */
+}
+    
+
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -255,14 +277,18 @@ function generateImage(event) {
   document.getElementById('loading-message').style.display = 'block';
   document.getElementById('loading-animation').style.display = 'block';
   document.getElementById('image-container').style.display = 'none'; // Cacher la section d'image
+  const imageElement = document.getElementById('generated-image');
+  imageElement.classList.remove('show'); // S'assurer que la classe est enlevée avant de charger une nouvelle image
 
   fetch(url)
     .then(response => response.json())  // Changer response.blob() en response.json() pour gérer le JSON
     .then(data => {
       const imageUrl = data.imageUrl; // Extraire l'URL de l'image du JSON
-      const imageElement = document.getElementById('generated-image');
       imageElement.src = imageUrl;
       document.getElementById('image-container').style.display = 'block'; // Afficher la section d'image une fois l'image chargée
+      setTimeout(() => {
+        imageElement.classList.add('show'); // Ajouter la classe "show" avec un petit délai pour l'animation
+      }, 100); // Délai pour s'assurer que l'image est visible avant l'animation
       document.getElementById('loading-message').style.display = 'none';
       document.getElementById('loading-animation').style.display = 'none';
     })
@@ -271,7 +297,7 @@ function generateImage(event) {
       document.getElementById('loading-message').style.display = 'none';
       document.getElementById('loading-animation').style.display = 'none';
     });
-    }
+}
   </script>
 </body>
 </html>
