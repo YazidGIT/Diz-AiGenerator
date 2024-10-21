@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Image Generator</title>
   <style>
-    body {
+body {
       font-family: 'Roboto', sans-serif;
       background-color: #1e1e2f;
       color: #e0e0e0;
@@ -163,6 +163,24 @@
       input[type="submit"] {
         font-size: 1rem;
       }
+    }    
+.download-button {
+      background-color: #8e44ad;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: background-color 0.3s;
+      margin-top: 10px;
+      display: block;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .download-button:hover {
+      background-color: #9b59b6;
     }
   </style>
 </head>
@@ -170,7 +188,7 @@
   <h1>Image Generator</h1>
   
   <form action="/generate-image" method="get" onsubmit="return generateImage(event)">
-    <label for="prompt">Prompt</label>
+      <label for="prompt">Prompt</label>
     <input type="text" id="prompt" name="prompt" placeholder="Entrez votre prompt..." required>
     
     <label for="model">Model</label>
@@ -238,6 +256,7 @@
   <div class="image-container" id="image-container">
     <h2>Image Generated :</h2>
     <img id="generated-image" src="" alt="Generated Image">
+    <a id="download-button" href="#" class="download-button" download="generated_image.png" style="display: none;">Télécharger l'image</a> <!-- Bouton de téléchargement -->
   </div>
 
   <script>
@@ -246,33 +265,38 @@
       optionalParams.style.display = optionalParams.style.display === 'none' || optionalParams.style.display === '' ? 'block' : 'none';
     }
 
-function generateImage(event) {
-  event.preventDefault();
-  const form = event.target;
-  const url = new URL(form.action);
-  const params = new URLSearchParams(new FormData(form));
-  url.search = params.toString();
+    function generateImage(event) {
+      event.preventDefault();
+      const form = event.target;
+      const url = new URL(form.action);
+      const params = new URLSearchParams(new FormData(form));
+      url.search = params.toString();
 
-  document.getElementById('loading-message').style.display = 'block';
-  document.getElementById('loading-animation').style.display = 'block';
-  document.getElementById('image-container').style.display = 'none'; // Cacher la section d'image
+      document.getElementById('loading-message').style.display = 'block';
+      document.getElementById('loading-animation').style.display = 'block';
+      document.getElementById('image-container').style.display = 'none'; // Cacher la section d'image
 
-  fetch(url)
-    .then(response => response.json())  // Changer response.blob() en response.json() pour gérer le JSON
-    .then(data => {
-      const imageUrl = data.imageUrl; // Extraire l'URL de l'image du JSON
-      const imageElement = document.getElementById('generated-image');
-      imageElement.src = imageUrl;
-      document.getElementById('image-container').style.display = 'block'; // Afficher la section d'image une fois l'image chargée
-      document.getElementById('loading-message').style.display = 'none';
-      document.getElementById('loading-animation').style.display = 'none';
-    })
-    .catch(error => {
-      console.error('Error generating image:', error);
-      document.getElementById('loading-message').style.display = 'none';
-      document.getElementById('loading-animation').style.display = 'none';
-    });
-}
+      fetch(url)
+        .then(response => response.json())  // Changer response.blob() en response.json() pour gérer le JSON
+        .then(data => {
+          const imageUrl = data.imageUrl; // Extraire l'URL de l'image du JSON
+          const imageElement = document.getElementById('generated-image');
+          imageElement.src = imageUrl;
+          document.getElementById('image-container').style.display = 'block'; // Afficher la section d'image une fois l'image chargée
+          document.getElementById('loading-message').style.display = 'none';
+          document.getElementById('loading-animation').style.display = 'none';
+
+          // Mettre à jour le lien de téléchargement
+          const downloadButton = document.getElementById('download-button');
+          downloadButton.href = imageUrl; // Associer l'URL de l'image au bouton de téléchargement
+          downloadButton.style.display = 'block'; // Afficher le bouton de téléchargement
+        })
+        .catch(error => {
+          console.error('Error generating image:', error);
+          document.getElementById('loading-message').style.display = 'none';
+          document.getElementById('loading-animation').style.display = 'none';
+        });
+    }
   </script>
 </body>
 </html>
