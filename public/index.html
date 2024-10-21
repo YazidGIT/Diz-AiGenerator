@@ -259,7 +259,7 @@ body {
     <a id="download-button" href="#" class="download-button" download="generated_image.png" style="display: none;">Télécharger l'image</a> <!-- Bouton de téléchargement -->
   </div>
 
-  <script>
+ <script>
     function toggleOptionalParams() {
       const optionalParams = document.getElementById('optional-parameters');
       optionalParams.style.display = optionalParams.style.display === 'none' || optionalParams.style.display === '' ? 'block' : 'none';
@@ -286,10 +286,10 @@ body {
           document.getElementById('loading-message').style.display = 'none';
           document.getElementById('loading-animation').style.display = 'none';
 
-          // Mettre à jour le lien de téléchargement
+          // Afficher le bouton de téléchargement
           const downloadButton = document.getElementById('download-button');
-          downloadButton.href = imageUrl; // Associer l'URL de l'image au bouton de téléchargement
-          downloadButton.style.display = 'block'; // Afficher le bouton de téléchargement
+          downloadButton.href = imageUrl; // Mettre à jour l'URL pour le téléchargement
+          downloadButton.style.display = 'block';
         })
         .catch(error => {
           console.error('Error generating image:', error);
@@ -297,6 +297,21 @@ body {
           document.getElementById('loading-animation').style.display = 'none';
         });
     }
-  </script>
+
+    // Forcer le téléchargement via JavaScript
+    document.getElementById('download-button').addEventListener('click', function (event) {
+      event.preventDefault(); // Empêcher la redirection par défaut
+      const imageUrl = this.href; // URL de l'image
+
+      // Créer un lien temporaire et déclencher le téléchargement
+      const a = document.createElement('a');
+      a.href = imageUrl;
+      a.download = 'generated_image.png'; // Nom du fichier à télécharger
+      document.body.appendChild(a); // Ajouter le lien temporairement au DOM
+      a.click(); // Déclencher le téléchargement
+      document.body.removeChild(a); // Retirer le lien du DOM après téléchargement
+    });
+</script>
+
 </body>
 </html>
