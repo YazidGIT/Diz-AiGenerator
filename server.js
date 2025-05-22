@@ -114,9 +114,9 @@ const models = {
     negative_prompt: "bad quality, bad hands",
     pre_prompt: "masterpiece, best quality, detailled,"
   },
-3: { name: "4thtailanimeHentai-v0.4.5",
+3: { name: "WAI-NSFW-illustrious-SDXL-v13",
     cfg_scale: 7,
-    steps: 20,
+    steps: 24,
     negative_prompt: "(worst quality, low quality:1.1), error, bad anatomy, bad hands, watermark, ugly, distorted, monster, manga sfx, EasyNegative",
     pre_prompt: " "
   },
