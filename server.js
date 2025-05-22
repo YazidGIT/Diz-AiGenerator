@@ -363,8 +363,10 @@ if (success && imageUrl) {
   res.status(500).send('Erreur lors de la génération de l’image.');
 }
 
-});
-}
+}; 
+})
+               
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
