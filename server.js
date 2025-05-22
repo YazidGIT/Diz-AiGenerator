@@ -241,6 +241,7 @@ const models = {
 },
 
  };
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.get('/generate-image', async (req, res) => {
   const { prompt, modelIndex = 1, sampler = 'Euler a', ratio = '1:1', steps, cfg_scale, seed = -1, loras: lorasQuery } = req.query;
@@ -362,11 +363,13 @@ if (success && imageUrl) {
 } else {
   res.status(500).send('Erreur lors de la génération de l’image.');
 }
+  } catch (err) {
+    console.error('Erreur lors de la génération :', err.message);
+    res.status(500).send('Erreur lors de la génération de l’image.');
+  }
+});
 
-}; 
-})
-               
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
