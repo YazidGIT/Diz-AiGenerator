@@ -6,16 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const tokens = [
-"96121b1d-4d28-40b6-ab84-a6d76e3b15df",
-"c7d20e0e-2fe0-4c97-8de2-eb32ba150000",
-"2bfd60e8-59e7-4d66-b780-b79b42782175",
-"c6d207ff-cb60-48c2-87ae-87009a80cc9c",
-"18f97175-6bb1-4b01-b34f-489c81972af3",
-"b2bb02b0-1251-452c-a94d-8cc008204555",
-"9cb6873c-26b4-4a97-8ff7-31d272fd9a02",
-"0f099a24-b967-41a6-9ee4-f9fadcaceafc",
-"3315b917-9914-4090-b5bc-d97b4db05284",
-"971f948d-2d80-4152-a5a9-b6883378decf"];
+"d258df41-393d-479f-a2db-3f76a7176354"];
 let tokenIndex = 0;
 
 const ratios = {
@@ -296,53 +287,82 @@ let { width, height } = aspectRatio;
 
   try {
     let response;
-    let success = false;
+  let success = false;
+let imageUrl = null;
 
-    const requestSteps = steps || modelConfig.steps;
-    const requestCfgScale = cfg_scale || modelConfig.cfg_scale;
+const requestSteps = steps || modelConfig.steps;
+const requestCfgScale = cfg_scale || modelConfig.cfg_scale;
 
+while (!success) {
+  try {
     const currentToken = tokens[tokenIndex];
 
-    while (!success) {
-      try {
-        response = await axios.post('https://visioncraft.top/api/image/generate', {
-          model: modelConfig.name,
-          prompt: styledPrompt,
-          negative_prompt: modelConfig.negative_prompt,
-          token: currentToken,
-          sampler,
-          steps: requestSteps,
-          width,
-          height,
-          cfg_scale: requestCfgScale,
-          loras: lorasObj,
-          seed,
-          stream: false
-        }, {
-          responseType: 'json'
-        });
+    const response = await axios.post(
+      'https://blackwave.studio/api/v1/generate',
+      {
+        token: currentToken,
+        model: modelConfig.name,
+        prompt: styledPrompt,
+        negative_prompt: modelConfig.negative_prompt,
+        sampler,
+        steps: requestSteps,
+        width,
+        height,
+        cfg_scale: requestCfgScale,
+        loras: lorasObj,
+        seed,
+        stream: true
+      },
+      { responseType: 'stream' }
+    );
 
-        success = true;
-      } catch (error) {
-        if (error.response && error.response.status === 403) {
-          console.log("Retrying Generation...");
-          tokenIndex = (tokenIndex + 1) % tokens.length;  // Rotate tokens on 403 error
-        } else {
-          throw new Error(error.message);
+    // Traiter le stream pour vérifier le statut
+    await new Promise((resolve, reject) => {
+      response.data.on('data', chunk => {
+        try {
+          const status = JSON.parse(chunk.toString());
+
+          if (status.status === 'WAITING') {
+            console.log(`En attente : ${status.queue_position}/${status.queue_total}`);
+          } else if (status.status === 'RUNNING') {
+            console.log('Génération en cours...');
+          } else if (status.status === 'SUCCESS') {
+            console.log(`Image générée avec succès : ${status.image_url}`);
+            imageUrl = status.image_url;
+            success = true;
+            resolve();
+          } else if (status.status === 'FAILED') {
+            reject(new Error('Génération échouée'));
+          }
+        } catch (err) {
+          // Ignorer les chunks partiels
         }
-      }
-    }
+      });
 
-    if (success) {
-      const imageUrl = response.data.image_url;
-      res.json({ imageUrl });
-    } else {
-      res.status(500).send('Error generating image.');
-    }
+      response.data.on('error', reject);
+      response.data.on('end', () => {
+        if (!success) reject(new Error('Stream terminé sans succès'));
+      });
+    });
+
   } catch (error) {
-    console.error(error);
-    res.status(500).send('An error occurred.');
+    if (error.response && error.response.status === 403) {
+      console.log("Token refusé. Rotation du token et nouvelle tentative...");
+      tokenIndex = (tokenIndex + 1) % tokens.length;
+    } else {
+      console.error('Erreur lors de la génération :', error.message);
+      throw error;
+    }
   }
+}
+
+// Après réussite
+if (success && imageUrl) {
+  res.json({ imageUrl });
+} else {
+  res.status(500).send('Erreur lors de la génération de l’image.');
+}
+
 });
 
 app.listen(PORT, () => {
